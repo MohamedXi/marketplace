@@ -35,7 +35,7 @@ class App extends Component {
             let address = networkData.address
             let marketplace = new web3.eth.Contract(abi, address)
             this.setState({marketplace})
-            const productCount = await marketplace.methods.productCount().call()
+            const productCount = marketplace.methods.productCount
             this.setState({productCount})
             // Load products
             for (let i = 1; i <= productCount; i++) {
@@ -63,10 +63,22 @@ class App extends Component {
         this.purchaseProduct = this.purchaseProduct.bind(this)
     }
 
-    createProduct(name, price) {
+    /*
+    createProduct = (name, price) => {
         this.setState({loading: true})
+        console.log(this.state.marketplace)
         this.state.marketplace.methods.createProduct(name, price).send({from: this.state.account})
-            .once('transactionHash', (transactionHash) => {
+            .on('transactionHash', (transactionHash) => {
+                this.setState({loading: false})
+            })
+    }
+     */
+
+    createProduct = (name, price) => {
+        this.setState({loading: true})
+        console.log(this.state.marketplace.methods)
+        this.state.marketplace.methods.createProduct(name, price).call({from: this.state.account})
+            .on('transactionHash', (transactionHash) => {
                 this.setState({loading: false})
             })
     }
